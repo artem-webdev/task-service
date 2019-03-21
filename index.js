@@ -1,14 +1,14 @@
-var Koa = require('koa');
-var Router = require('koa-router');
-var pool = require('./mysql-pool');
-var cors = require('@koa/cors');
-var axios = require('axios');
-var fs = require('./fileS');
+const Koa = require('koa');
+const Router = require('koa-router');
+const pool = require('./mysql-pool');
+const cors = require('@koa/cors');
+const axios = require('axios');
+const fs = require('./fileS');
 
-var app = new Koa();
+const app = new Koa();
 app.use(cors());
 
-var router = new Router();
+const router = new Router();
 
 const api_key = "cc7e0e2e24d0a79b409823b4ecf906e7";
 const lang = "ru";
@@ -21,14 +21,14 @@ router.get('/weather/', async (ctx, next) => {
         let lat = ctx.request.query.lat;
         let lon = ctx.request.query.lon;
         if (lat && lon) {
-            var coordinates = `lat=${lat}&lon=${lon}`;
+            const coordinates = `lat=${lat}&lon=${lon}`;
             city = "";
         } else {
             coordinates = "";
         }
         let url = `https://api.openweathermap.org/data/2.5/weather?${city}lang=${lang}&${coordinates}&appid=${api_key}`;
         let response = await axios.get(url);
-        var res = await pool.query('select city from geo where city_en=? ', [response.data.name]);
+        const res = await pool.query('select city from geo where city_en=? ', [response.data.name]);
         let result = {
             "temp": response.data.main.temp,
             "description": response.data.weather[0].description,
@@ -58,7 +58,7 @@ router.get('/country/', async (ctx, next) => {
 
     try {
 
-        var countries = await pool.query('select distinct country from geo');
+        const countries = await pool.query('select distinct country from geo');
         ctx.body = countries;
 
     } catch (err) {
@@ -74,8 +74,8 @@ router.get('/city/', async (ctx, next) => {
 
     try {
 
-        var country = ctx.request.query.country;
-        var cities = await pool.query('select  city,city_en from geo where country=? order by city', [country]);
+        const country = ctx.request.query.country;
+        const cities = await pool.query('select  city,city_en from geo where country=? order by city', [country]);
         ctx.body = cities;
 
     } catch (err) {
