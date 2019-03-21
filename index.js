@@ -13,7 +13,7 @@ const router = new Router();
 const api_key = "cc7e0e2e24d0a79b409823b4ecf906e7";
 const lang = "ru";
 
-router.get('/weather/', async (ctx, next) => {
+router.get('/weather/', async (ctx) => {
 
     try {
 
@@ -29,7 +29,7 @@ router.get('/weather/', async (ctx, next) => {
         let url = `https://api.openweathermap.org/data/2.5/weather?${city}lang=${lang}&${coordinates}&appid=${api_key}`;
         let response = await axios.get(url);
         const res = await pool.query('select city from geo where city_en=? ', [response.data.name]);
-        let result = {
+        const result = {
             "temp": response.data.main.temp,
             "description": response.data.weather[0].description,
             "icon": 'http://openweathermap.org/img/w/' + response.data.weather[0].icon + '.png',
@@ -54,7 +54,7 @@ router.get('/weather/', async (ctx, next) => {
 });
 
 
-router.get('/country/', async (ctx, next) => {
+router.get('/country/', async (ctx) => {
 
     try {
 
@@ -70,7 +70,7 @@ router.get('/country/', async (ctx, next) => {
 
 });
 
-router.get('/city/', async (ctx, next) => {
+router.get('/city/', async (ctx) => {
 
     try {
 
@@ -83,7 +83,6 @@ router.get('/city/', async (ctx, next) => {
         ctx.assert(err);
         await fs.appendFile(__dirname + '/error.txt', new Date().toISOString() + ' - ' + err + '\n');
     }
-
 
 });
 
